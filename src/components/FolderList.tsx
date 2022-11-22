@@ -123,7 +123,7 @@ const FolderList = ({folderList, refreshTheApp} : any) => {
                                 return printTree(n);
                             
                     }) : null }
-                {(node.descendents.length || !node.isVisited) ? null : <div>{"-No folders " + node.isVisited + node.descendents.length}</div> }
+                {(node.descendents.length || !node.isVisited) ? null : <div style={{marginLeft : "15px"}}>{"-No folders "}</div> }
             </ul>
         );
     }

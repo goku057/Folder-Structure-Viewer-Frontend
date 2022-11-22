@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 
 const Modal = (props : any) => {
     const [value, setValue] = useState("");
+    const [delTask, setDelTask] = useState(false)
+    const [myStyle, setMyStyle] = useState({display : "block"})
 
     const handleInput = (e : any) => {
         setValue(e.target.value);
@@ -12,14 +14,54 @@ const Modal = (props : any) => {
         setValue("");
     }
 
+    const handleDeleteTask = () => {
+        setMyStyle({display : "none"});
+    }
+    
+
+    const handleConfirmationBox = () => {
+        if (!delTask) {
+            // document.querySelector<HTMLElement>(".confirm-bg").style.display = "flex"
+            // document.querySelector<HTMLElement>(".container").style.display = "flex"
+            
+            setDelTask(true)
+        } else {
+            // document.querySelector<HTMLElement>(".confirm-bg").style.display = "none";
+            // document.querySelector<HTMLElement>(".container").style.display = "none";
+            setDelTask(false);
+        }
+    }
     
     return (
-        <div>
-            <h3>Add folder in `{props.focusedFolder.folder_name}` </h3>
-            <form action="" id='form' onSubmit={handleSubmit}>
-                <input value={value} onChange={handleInput} placeholder='Enter folder name' required/>
-            </form>
-            <button onClick={props.closeModal}>Cancel</button><button form='form' type='submit'>Create</button>
+        <div >
+            <div className="container" style={myStyle}>
+                    <div className="confirmation-text">
+                        Add folder in `{props.focusedFolder.folder_name}` 
+                    </div>
+                    <form action="" id='form' onSubmit={handleSubmit}>
+                        <input value={value} onChange={handleInput} placeholder='Enter folder name' required/>
+                    </form>
+                    <div className="button-container">
+                    <button className="cancel-button" onClick={props.closeModal}>Cancel</button>
+                    <button form='form' type='submit' className="confirmation-button">Create</button>
+                        {/* <button
+                            className="cancel-button"
+                            onClick={() => handleConfirmationBox()}>
+                            Cancel
+                        </button>
+                        <button
+                            className="confirmation-button"
+                            onClick={handleDeleteTask}>
+                            Delete
+                        </button> */}
+                    </div>
+                </div>
+                <div
+                    className="confirm-bg"
+                    onClick={() => handleConfirmationBox()}>
+                        asfasf
+                </div>
+           
         </div>
     );
 };

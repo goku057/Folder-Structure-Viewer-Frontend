@@ -28,7 +28,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Welcome to ggwp</h1>
+        <h1>Welcome to Folder Structure Viewer</h1>
           {renderList && <FolderList folderList = {folders} refreshTheApp = {refreshTheApp}/>}
       </header>
     </div>
