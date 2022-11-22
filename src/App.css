@@ -4,11 +4,8 @@
   padding-bottom: 5px;
 }
 
-.cross-image{
-  width : "20px";
-  height : "20px";
-  margin-left : "10px";
-  margin-right : "10px";
+.btn :hover{
+  cursor: pointer;
 }
 
 .confirm-bg {
@@ -24,6 +21,31 @@
   z-index: 2; /* higher than all other items, but lower than 
     the confirm box*/
 }
+
+/* image section */
+.arrow-img {
+  max-height: 10px;
+  max-width: 10px;
+  display: inline;
+}
+
+.cross-image{
+  width : 20px;
+  height : 20px;
+  margin-left : 10px;
+  margin-right : 10px;
+  margin-top: 5px
+}
+
+.cross-image:hover{
+  cursor: pointer;
+}
+
+.add-image{
+  width : 15px; 
+  height : 15px
+}
+
 
 
 /* confirm start */

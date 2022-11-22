@@ -3,119 +3,143 @@ import Folder from './Folder';
 import { backendURL } from "../helpers";
 import "../App.css";
 import Modal from './Modal';
-import Confirm from './Confirm';
 
-const FolderList = () => {
-    const [folders, setFolders] = useState([]);
+
+const FolderList = ({folderList, refreshTheApp} : any) => {
+    const [folders, setFolders] : any = useState(folderList);
     const [showModal, setShowModal] = useState(false);
     const [focusedFolder, setFocusedFolder] = useState(undefined);
     const [refresh, setRefresh] = useState(false);
-    const [showListInfo, setShowListInfo] = useState([]);
+    const downURL = "https://cdn-icons-png.flaticon.com/512/57/57055.png";
+    const rightURL = "https://cdn-icons-png.flaticon.com/512/59/59385.png"
 
-    let myToggle = () => {
-        
-    }
 
-    useEffect(() => {
-        console.log(backendURL);
-        fetch(backendURL + "/")
-            .then(res => res.json())
-            .then(res => {
-                // console.log(res);
-                setFolders(res);
-            })
-    }, [refresh]);
+    let toggleShow = (e: any, id: string) => {
+        console.log(e.target)
 
-    const handleAdd = (e: any) => {
-        setShowModal(true); 
-        setFocusedFolder(e);
-        
     }
     
-    const handleDelete = (e : any) => {
-        let a  = window.confirm("Delete `" + e.folder_name + "`?");
+    useEffect(() => {
+        setFolders(folders);
+    }, [folders]);
+
+    const handleAdd = (e: any) => {
+        setShowModal(true);
+        setFocusedFolder(e);
+    }
+
+    const handleDelete = (e: any) => {
+        let a = window.confirm("Delete `" + e.folder_name + "`?");
         // console.log(a);
         // console.log("Delete button pressed");
         let data = {
-            folderID : e.id
+            folderID: e.id
         }
-        if(a){
+        if (a) {
             fetch(backendURL + "/remove", {
-                method : "POST",
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body : JSON.stringify(data)
+                body: JSON.stringify(data)
             })
-            .then(res => res.json())
-            .then(res => {
-                // alert("Removed successfully");
-                console.log(res);
-                setRefresh(!refresh);
-            })
-            .catch(e => {
-                console.log("error in handle delete of folderList.tsx")
-                console.log(e);
-            });
+                .then(res => res.json())
+                .then(res => {
+                    // alert("Removed successfully");
+                    console.log(res);
+                    setRefresh(!refresh);
+                    refreshTheApp();
+                })
+                .catch(e => {
+                    console.log("error in handle delete of folderList.tsx")
+                    console.log(e);
+                });
         }
-        
+
     }
     const closeModal = () => {
         setShowModal(false);
     }
 
-    const submitModal = (parentID : string , folderName : string) => {
+    const submitModal = (parentID: string, folderName: string) => {
         let data = {
-            folderParentID : parentID,
-            name : folderName
+            folderParentID: parentID,
+            name: folderName
         }
         // console.log(data);
         fetch(backendURL + "/create", {
-            method : "POST",
+            method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body : JSON.stringify(data)
+            body: JSON.stringify(data)
         })
-        .then(res => res.json())
-        .then(res => {
-            setRefresh(!refresh);
-            setShowModal(false);
-            console.log(res)}
+            .then(res => res.json())
+            .then(res => {
+                setRefresh(!refresh);
+                setShowModal(false);
+                refreshTheApp();
+                console.log(res)
+            }
             )
-        .catch(e => {
-            console.error("error in submitModal")
-            // console.log(e);
-        });
+            .catch(e => {
+                console.error("error in submitModal")
+                // console.log(e);
+            });
     }
 
-    let printTree = (node : any) : any => { 
+    const setShowStatus  = (node : any, id : string) => {
+        console.log("setShow called")
+        if(node.id === id){
+            node.isVisited = !node.isVisited;
+        }
+        if(node.descendents.length <= 0){
+            return;
+        }
+            
+        for (let i = 0; i < node.descendents.length; i++) {
+            setShowStatus(node.descendents[i], id);    
+        }
+
+        
+        return ;
+    }
+
+    const handleView = (e: any, id: string) => {
+        console.log(id);
+        setShowStatus(folders[0], id);
+        setRefresh(!refresh);
+    }
+    let printTree = (node: any): any => {
+        // console.log(node);
+        // console.log("ez");
+        // console.log("Node name is " + node.folder_name + " visited = " + node.isVisited);
         return (
-            <ul key={node.id}>
-                {node.descendents.length === 0 ? <li>No folder here</li> : null}
-                {node.descendents ?  node.descendents.map( (n: any) => {
-                    return(
-                        <ul key={n.id}>
-                            <li>{<Folder folderInfo = {n} handleAdd = {handleAdd} handleDelete = {handleDelete}/>} 
-                            </li> 
-                            {printTree(n)}
-                        </ul>
-                    );
-                }) : "No folders here"}
+            <ul key={node.id} id = {node.id} >
+                <img src={node.isVisited ? downURL : rightURL} className='arrow-img' alt="" data-fid = {node.id} onClick = {(e) => handleView(e, node.id)}/>
+                <div style={{display : "inline", width : "100%"}}>{<Folder folderInfo={node} handleAdd={handleAdd} handleDelete={handleDelete} />}</div>
+                {(node.descendents.length && node.isVisited) ? node.descendents.map((n: any) => {
+                            
+                                return printTree(n);
+                            
+                    }) : null }
+                {(node.descendents.length || !node.isVisited) ? null : <div>{"-No folders " + node.isVisited + node.descendents.length}</div> }
             </ul>
         );
     }
 
+
+
+
+
+
     return (
         <div>
             {/* <Confirm /> */}
-
-            {showModal && <Modal closeModal = {closeModal} focusedFolder = {focusedFolder} submitModal = {submitModal}/>}
-            <ul >
-                <li>root <button className='btn' onClick={() => handleAdd(folders[0])}><span><img src={"https://cdn-icons-png.flaticon.com/512/1828/1828925.png"} style={{ width: "15px", height: "15px"}} alt="" /> New</span></button></li>
-                {!folders.length && "-No Folders"}
-                {folders.length && printTree(folders[0])}
-            </ul>
+            
+            {showModal && <Modal closeModal={closeModal} focusedFolder={focusedFolder} submitModal={submitModal} />}
+            {folders.length && printTree(folders[0])}
+            
         </div>
     );
 };
