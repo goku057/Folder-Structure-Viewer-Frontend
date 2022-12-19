@@ -11,13 +11,7 @@ const FolderList = ({folderList, refreshTheApp} : any) => {
     const [focusedFolder, setFocusedFolder] = useState(undefined);
     const [refresh, setRefresh] = useState(false);
     const downURL = "https://cdn-icons-png.flaticon.com/512/57/57055.png";
-    const rightURL = "https://cdn-icons-png.flaticon.com/512/59/59385.png"
-
-
-    let toggleShow = (e: any, id: string) => {
-        console.log(e.target)
-
-    }
+    const rightURL = "https://cdn-icons-png.flaticon.com/512/59/59385.png";
     
     useEffect(() => {
         setFolders(folders);

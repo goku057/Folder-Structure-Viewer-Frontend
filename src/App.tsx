@@ -6,6 +6,7 @@ function App() {
     const [refresh, setRefresh] = useState(false);
     const [folders, setFolders] : any = useState([]);
     const[renderList, setRenderList] = useState(false);
+    const[backendMsg, setBackendMsg] = useState("");
 
     useEffect(() => {
       // console.log("app effect")
@@ -16,6 +17,10 @@ function App() {
               // console.log(res);
               setFolders(res);
               setRenderList(true);
+          })
+          .catch( e => {
+            console.log(e)
+            setBackendMsg("Could Not connect to server probably railway app monthly 20days trial expired");
           })
   }, [refresh]);
 
@@ -28,9 +33,10 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Welcome to Folder Structure Viewer</h1>
+        <h1>Welcome to Folder Structure Viewer!</h1>
           {renderList && <FolderList folderList = {folders} refreshTheApp = {refreshTheApp}/>}
       </header>
+      <div>{backendMsg}</div>
     </div>
   );
 }
